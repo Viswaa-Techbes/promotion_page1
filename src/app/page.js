@@ -44,7 +44,8 @@ const PromoSection = () => {
 
   return (
     <>
-      <section className="relative w-full min-h-screen overflow-hidden flex items-center">
+      {/* Added py-12 for mobile vertical spacing and bg-gray-900 as fallback */}
+      <section className="relative w-full min-h-screen overflow-hidden flex items-start pt-10 sm:pt-14 lg:pt-16">
 
         {/* HTML5 Background Video */}
         <video
@@ -60,13 +61,15 @@ const PromoSection = () => {
         </video>
 
         {/* Dark Overlay for Text Readability */}
-        <div className="absolute inset-0 z-10 backdrop-blur-[2px]"></div>
+        <div className="absolute inset-0 z-10 backdrop-blur-[2px] bg-black/40"></div>
 
-        <div className="max-w-7xl mx-auto relative z-20">
+        {/* Added px-4 sm:px-6 for horizontal breathing room on mobile */}
+        <div className="w-full max-w-7xl mx-auto relative z-20 px-4 sm:px-6 lg:px-8">
 
           {/* Company Logo & Name Header */}
-          <div className="flex justify-center items-center mb-6">
-            <div className="relative h-24 w-auto">
+          <div className="flex justify-center items-center mb-8 lg:mb-12">
+            {/* Adjusted height for responsiveness: h-16 on mobile, h-24 on desktop */}
+            <div className="relative bottom-5 lg:bottom-10 h-16 sm:h-20 lg:h-24 w-auto">
               <Image
                 src="/logo.png"
                 alt="Logo"
@@ -77,45 +80,41 @@ const PromoSection = () => {
               />
             </div>
           </div>
-          {/* <div>
-              <h1 className="text-2xl font-extrabold text-blue-500 tracking-tight">
-                Tech<span className="text-orange-400">Bes</span>
-              </h1>
-              <p className="text-xs font-semibold tracking-wider text-shadow-white uppercase">Technical Services</p>
-            </div> */}
-          {/* </div> */}
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
 
             {/* Left Content Area */}
-            <div className="lg:col-span-7 flex flex-col justify-center">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-100 text-red-600 text-sm font-bold uppercase tracking-wide w-max mb-6">
-                <span className="relative flex h-2.5 w-2.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-600"></span>
-                </span>
-                Only for Limited Members
+            <div className="lg:col-span-7 relative bottom-6 lg:bottom-10 flex flex-col justify-center text-center lg:text-left">
+              <div className="flex justify-center lg:justify-start">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-100 text-red-600 text-xs sm:text-sm font-bold uppercase tracking-wide mb-6">
+                  <span className="relative flex h-2.5 w-2.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-600"></span>
+                  </span>
+                  Only for Limited Members
+                </div>
               </div>
 
-              <h2 className="text-4xl md:text-5xl font-extrabold text-amber-50 tracking-tight leading-tight">
+              {/* Responsive text sizes: text-3xl mobile -> text-5xl desktop */}
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-amber-50 tracking-tight leading-tight">
                 Lifetime Service <span className="text-blue-600">Membership</span>
               </h2>
 
-              <p className="mt-4 text-xl text-amber-300 font-medium">
+              <p className="mt-4 text-lg sm:text-xl text-amber-300 font-medium px-2 lg:px-0">
                 One Time Subscription for All Your Technical Service Needs
               </p>
 
-              <div className="mt-6 py-3 border-y border-gray-100">
-                <p className="text-sm md:text-base font-bold text-white tracking-wider">
-                  CCTV <span className="text-red-500 mx-2">•</span>
-                  LAPTOP <span className="text-red-500 mx-2">•</span>
-                  DESKTOP <span className="text-red-500 mx-2">•</span>
-                  ELECTRICAL <span className="text-red-500 mx-2">•</span>
-                  NETWORKING
+              <div className="mt-6 py-3 border-y border-gray-100/20 lg:border-gray-100">
+                <p className="text-xs sm:text-sm md:text-base font-bold text-white tracking-wider flex flex-wrap justify-center lg:justify-start gap-y-2">
+                  <span>CCTV</span> <span className="text-red-500 mx-2 hidden sm:inline">•</span>
+                  <span>LAPTOP</span> <span className="text-red-500 mx-2 hidden sm:inline">•</span>
+                  <span>DESKTOP</span> <span className="text-red-500 mx-2 hidden sm:inline">•</span>
+                  <span>ELECTRICAL</span> <span className="text-red-500 mx-2 hidden sm:inline">•</span>
+                  <span>NETWORKING</span>
                 </p>
               </div>
 
-              <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
                 {[
                   "Priority Service Support",
                   "Same Day Visit",
@@ -123,13 +122,13 @@ const PromoSection = () => {
                   "Lifetime Membership Access",
                   "Dedicated Customer Assistance"
                 ].map((benefit, index) => (
-                  <div key={index} className="flex items-start gap-3 group">
+                  <div key={index} className="flex items-start gap-3 group justify-center sm:justify-start">
                     <div className="shrink-0 mt-1 w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center group-hover:bg-blue-600 transition-colors duration-300">
                       <svg className="w-4 h-4 text-blue-600 group-hover:text-white transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
                       </svg>
                     </div>
-                    <span className="text-blue-100 font-semibold group-hover:text-blue-300 transition-colors duration-300">
+                    <span className="text-blue-100 font-semibold group-hover:text-blue-300 transition-colors duration-300 text-sm sm:text-base">
                       {benefit}
                     </span>
                   </div>
@@ -138,13 +137,13 @@ const PromoSection = () => {
             </div>
 
             {/* Right Pricing Card Area */}
-            <div className="lg:col-span-5 flex justify-center lg:justify-end">
-              <div className="w-full max-w-md bg-white rounded-3xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] border border-gray-100 overflow-hidden transform hover:-translate-y-2 transition-transform duration-300">
+            <div className="lg:col-span-5 relative bottom-14 lg:bottom-6 flex justify-center lg:justify-end mt-8 lg:mt-0">
+              <div className="w-full max-w-sm sm:max-w-md bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden transform hover:-translate-y-2 transition-transform duration-300">
                 <div className="h-2 w-full bg-linear-to-r from-blue-600 to-blue-400"></div>
 
-                <div className="p-8">
+                <div className="p-6 sm:p-8">
                   <div className="text-center">
-                    <span className="text-sm font-bold tracking-widest text-gray-400 uppercase">
+                    <span className="text-xs sm:text-sm font-bold tracking-widest text-gray-400 uppercase">
                       One Time Subscription
                     </span>
                   </div>
@@ -156,19 +155,18 @@ const PromoSection = () => {
 
                   <div className="flex flex-col items-center justify-center mb-8">
                     <div className="flex items-center gap-3 mb-1">
-                      <span className="text-2xl text-gray-400 line-through font-semibold">₹4,999</span>
-                      <span className="px-2 py-1 bg-red-100 text-red-600 text-xs font-extrabold rounded-md uppercase">Save 60%</span>
+                      <span className="text-xl sm:text-2xl text-gray-400 line-through font-semibold">₹4,999</span>
+                      <span className="px-2 py-1 bg-red-100 text-red-600 text-[10px] sm:text-xs font-extrabold rounded-md uppercase">Save 60%</span>
                     </div>
                     <div className="flex items-start">
-                      <span className="text-3xl font-bold text-gray-900 mt-2">₹</span>
-                      <span className="text-6xl font-extrabold text-blue-600 tracking-tighter">1999</span>
+                      <span className="text-2xl sm:text-3xl font-bold text-gray-900 mt-2">₹</span>
+                      <span className="text-5xl sm:text-6xl font-extrabold text-blue-600 tracking-tighter">1999</span>
                     </div>
                   </div>
 
-                  {/* Added onClick handler here */}
                   <button
                     onClick={() => setIsModalOpen(true)}
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-xl shadow-lg hover:shadow-blue-600/30 transition-all duration-300 flex items-center justify-center gap-2 group"
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 sm:py-4 px-8 rounded-xl shadow-lg hover:shadow-blue-600/30 transition-all duration-300 flex items-center justify-center gap-2 group"
                   >
                     Subscribe Now
                     <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -176,7 +174,7 @@ const PromoSection = () => {
                     </svg>
                   </button>
 
-                  <div className="mt-5 flex items-center justify-center gap-2 text-sm text-gray-500 font-medium">
+                  <div className="mt-5 flex items-center justify-center gap-2 text-xs sm:text-sm text-gray-500 font-medium">
                     <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
                     </svg>
@@ -187,10 +185,11 @@ const PromoSection = () => {
             </div>
           </div>
         </div>
+        
         {/* Terms Footer */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30">
-          <div className="px-3 py-1.5  rounded">
-            <p className="text-[10px] text-white/90 whitespace-nowrap">
+        <div className="absolute bottom-2 sm:bottom-8 left-1/2 -translate-x-1/2 z-30 w-full text-center px-4">
+          <div className="px-3 py-1.5 rounded">
+            <p className="text-[10px] text-white/90">
               * Terms & Conditions apply. Membership benefits are subject to service availability & location coverage.
             </p>
           </div>
@@ -202,11 +201,12 @@ const PromoSection = () => {
       {/* Modal Overlay & Form */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm transition-opacity">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden relative animate-in fade-in zoom-in-95 duration-200">
+          {/* Added max-h-[90vh] and overflow-y-auto to allow scrolling on small landscape screens */}
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden relative animate-in fade-in zoom-in-95 duration-200 max-h-[90vh] flex flex-col">
 
             {/* Modal Header */}
-            <div className="bg-gray-50 px-6 py-4 border-b border-gray-100 flex justify-between items-center">
-              <h3 className="text-lg font-bold text-gray-900">Complete Your Subscription</h3>
+            <div className="bg-gray-50 px-6 py-4 border-b border-gray-100 flex justify-between items-center shrink-0">
+              <h3 className="text-lg font-bold text-gray-900">Complete Subscription</h3>
               <button
                 onClick={() => setIsModalOpen(false)}
                 className="text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-1 rounded-lg transition-colors"
@@ -217,8 +217,8 @@ const PromoSection = () => {
               </button>
             </div>
 
-            {/* Modal Form */}
-            <form onSubmit={handleSubmit} className="p-6 space-y-4">
+            {/* Modal Form - Added overflow-y-auto to form area */}
+            <form onSubmit={handleSubmit} className="p-6 space-y-4 overflow-y-auto">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1">Full Name <span className="text-red-500">*</span></label>
                 <input
