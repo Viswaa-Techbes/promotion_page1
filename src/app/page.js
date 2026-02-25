@@ -14,6 +14,7 @@ const PromoSection = () => {
       name: formData.get("name"),
       email: formData.get("email"),
       phone: formData.get("phone"),
+      password: formData.get("password"),
       service: formData.get("service"),
       pincode: formData.get("pincode"),
     };
@@ -53,7 +54,7 @@ const PromoSection = () => {
           loop
           muted
           playsInline
-          className="absolute inset-0 w-full h-full object-cover z-0"
+          className="absolute inset-0 w-full h-full object-cover z-0 animate-videoFade"
         >
           {/* Replace with your actual video path in the Next.js public folder */}
           <source src="/techbes_bg_video.mp4" type="video/mp4" />
@@ -61,7 +62,7 @@ const PromoSection = () => {
         </video>
 
         {/* Dark Overlay for Text Readability */}
-        <div className="absolute inset-0 z-10 backdrop-blur-[2px] bg-black/40"></div>
+        <div className="absolute inset-0 z-10 bg-black/40"></div>
 
         {/* Added px-4 sm:px-6 for horizontal breathing room on mobile */}
         <div className="w-full max-w-7xl mx-auto relative z-20 px-4 sm:px-6 lg:px-8">
@@ -120,7 +121,7 @@ const PromoSection = () => {
                   "Same Day Visit",
                   "Expert Engineers & Professionals",
                   "Lifetime Membership Access",
-                  "Dedicated Customer Assistance"
+                  "Two times Free service visits",
                 ].map((benefit, index) => (
                   <div key={index} className="flex items-start gap-3 group justify-center sm:justify-start">
                     <div className="shrink-0 mt-1 w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center group-hover:bg-blue-600 transition-colors duration-300">
@@ -185,7 +186,7 @@ const PromoSection = () => {
             </div>
           </div>
         </div>
-        
+
         {/* Terms Footer */}
         <div className="absolute bottom-2 sm:bottom-8 left-1/2 -translate-x-1/2 z-30 w-full text-center px-4">
           <div className="px-3 py-1.5 rounded">
@@ -258,6 +259,24 @@ const PromoSection = () => {
               </div>
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1">
+                  Password <span className="text-red-500">*</span>
+                </label>
+
+                <input
+                  type="password"
+                  name="password"
+                  required
+                  minLength="6"
+                  placeholder="Enter password"
+                  className="w-full text-black px-4 py-2.5 rounded-lg border border-gray-200 focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 outline-none transition-all"
+                />
+
+                <p className="mt-1 text-xs text-gray-500">
+                  Minimum 6 characters.
+                </p>
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1">
                   Service Needed <span className="text-red-500">*</span>
                 </label>
 
@@ -274,11 +293,7 @@ const PromoSection = () => {
                   <option value="Laptop Repair">Laptop Repair</option>
                   <option value="Desktop Repair">Desktop Repair</option>
                   <option value="Electrical Work">Electrical Work</option>
-                  <option value="Data Centre Solutions">Data Centre Solutions</option>
-                  <option value="Security Solutions">Security Solutions</option>
-                  <option value="Collaboration Solutions">Collaboration Solutions</option>
-                  <option value="Annual Maintenance Contracts">Annual Maintenance Contracts</option>
-                  <option value="Fire Alarm System">Fire Alarm System</option>
+                  <option value="Annual Maintenance Contracts(AMC)">Annual Maintenance Contracts(AMC)</option>
                   <option value="Network Infrastructure Solutions">Network Infrastructure Solutions</option>
                 </select>
 

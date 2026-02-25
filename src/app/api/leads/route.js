@@ -1,17 +1,40 @@
-import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 
-
 // CREATE LEAD
+import clientPromise from "@/lib/mongodb";
+import bcrypt from "bcryptjs";
+
 export async function POST(req) {
   try {
-    const body = await req.json();
+    const { name, email, phone, password, service, pincode } =
+      await req.json();
+
+    if (!name || !phone || !password) {
+      return Response.json({
+        success: false,
+        message: "Required fields missing",
+      });
+    }
+
+    if (password.length < 6) {
+      return Response.json({
+        success: false,
+        message: "Password must be 6+ chars",
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const client = await clientPromise;
     const db = client.db("promoDB");
 
     const lead = {
-      ...body,
+      name,
+      email,
+      phone,
+      password: hashedPassword, // hashed
+      service,
+      pincode,
       status: "Pending",
       createdAt: new Date(),
     };
@@ -67,22 +90,22 @@ export async function PATCH(req) {
 }
 
 
-// DELETE LEAD
-export async function DELETE(req) {
-  try {
-    const { searchParams } = new URL(req.url);
-    const id = searchParams.get("id");
+// // DELETE LEAD
+// export async function DELETE(req) {
+//   try {
+//     const { searchParams } = new URL(req.url);
+//     const id = searchParams.get("id");
 
-    const client = await clientPromise;
-    const db = client.db("promoDB");
+//     const client = await clientPromise;
+//     const db = client.db("promoDB");
 
-    await db.collection("leads").deleteOne({
-      _id: new ObjectId(id),
-    });
+//     await db.collection("leads").deleteOne({
+//       _id: new ObjectId(id),
+//     });
 
-    return Response.json({ success: true });
-  } catch (err) {
-    console.error("DELETE ERROR:", err);
-    return Response.json({ success: false });
-  }
-}
+//     return Response.json({ success: true });
+//   } catch (err) {
+//     console.error("DELETE ERROR:", err);
+//     return Response.json({ success: false });
+//   }
+// }

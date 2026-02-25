@@ -18,11 +18,18 @@ const AdminDashboard = () => {
   }, []);
 
   // SAFE FILTER
-  const filteredLeads = leads.filter((lead) =>
-    (lead.name || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (lead.phone || "").includes(searchTerm) ||
-    (lead.pincode || "").includes(searchTerm)
-  );
+  const filteredLeads = leads.filter((lead) => {
+    const term = searchTerm.toLowerCase().trim();
+
+    return (
+      lead.name?.toLowerCase().includes(term) ||
+      lead.email?.toLowerCase().includes(term) ||
+      lead.phone?.toString().toLowerCase().includes(term) ||
+      lead.pincode?.toString().toLowerCase().includes(term) ||
+      lead.service?.toLowerCase().includes(term) ||
+      lead.status?.toLowerCase().includes(term)
+    );
+  });
 
   // STATUS UPDATE
   const updateStatus = async (id, status) => {
@@ -142,7 +149,7 @@ const AdminDashboard = () => {
                   <th className="px-6 py-4">Contact</th>
                   <th className="px-6 py-4">Pincode</th>
                   <th className="px-6 py-4">Status</th>
-                  <th className="px-6 py-4 text-right">Actions</th>
+                  {/* <th className="px-6 py-4 text-right">Actions</th> */}
                 </tr>
               </thead>
               <tbody>
@@ -178,20 +185,19 @@ const AdminDashboard = () => {
                           }
                           className="text-xs border rounded px-2 py-1"
                         >
-                          <option value="Pending">Pending</option>
-                          <option value="Contacted">Contacted</option>
-                          <option value="Converted">Converted</option>
+                          <option value="Active">Active</option>
+                          <option value="Not Active">Not Active</option>
                         </select>
                       </td>
 
-                      <td className="px-6 py-4 text-right">
+                      {/* <td className="px-6 py-4 text-right">
                         <button
                           onClick={() => deleteLead(lead._id)}
                           className="text-red-600 hover:text-red-900 text-sm"
                         >
                           Delete
                         </button>
-                      </td>
+                      </td> */}
                     </tr>
                   ))
                 ) : (
