@@ -17,7 +17,29 @@ const AdminDashboard = () => {
       });
   }, []);
 
+  // ===============================
+  // ✅ STATS CALCULATION
+  // ===============================
+
+  const normalizeStatus = (status) =>
+    status?.toLowerCase().trim();
+
+  const activeCount = leads.filter((lead) =>
+    ["active", "contacted", "converted"].includes(
+      normalizeStatus(lead.status)
+    )
+  ).length;
+
+  const notActiveCount = leads.filter((lead) =>
+    ["not active", "pending"].includes(
+      normalizeStatus(lead.status)
+    )
+  ).length;
+
+  // ===============================
   // SAFE FILTER
+  // ===============================
+
   const filteredLeads = leads.filter((lead) => {
     const term = searchTerm.toLowerCase().trim();
 
@@ -31,7 +53,10 @@ const AdminDashboard = () => {
     );
   });
 
+  // ===============================
   // STATUS UPDATE
+  // ===============================
+
   const updateStatus = async (id, status) => {
     await fetch("/api/leads", {
       method: "PATCH",
@@ -46,18 +71,10 @@ const AdminDashboard = () => {
     );
   };
 
-  // DELETE LEAD
-  const deleteLead = async (id) => {
-    await fetch(`/api/leads?id=${id}`, {
-      method: "DELETE",
-    });
-
-    setLeads((prev) =>
-      prev.filter((lead) => lead._id !== id)
-    );
-  };
-
+  // ===============================
   // EXPORT CSV
+  // ===============================
+
   const exportCSV = () => {
     const headers = [
       "Name",
@@ -99,8 +116,12 @@ const AdminDashboard = () => {
     <div className="min-h-screen bg-gray-50 p-4 md:p-8 w-full">
       <div className="max-w-7xl mx-auto">
 
-        {/* Header */}
-        <div className="mb-8 flex justify-between items-center">
+        {/* ===============================
+            HEADER + STATS
+        =============================== */}
+
+        <div className="mb-8 flex flex-col md:flex-row justify-between gap-4">
+
           <div>
             <h1 className="text-3xl font-extrabold text-gray-900">
               Admin Dashboard
@@ -110,24 +131,53 @@ const AdminDashboard = () => {
             </p>
           </div>
 
-          <div className="bg-white p-3 rounded-xl shadow-sm border">
-            <span className="text-xs text-gray-500 uppercase">
-              Total Leads
-            </span>
-            <div className="text-2xl font-bold text-blue-600">
-              {leads.length}
+          {/* Stats Boxes */}
+          <div className="flex gap-4">
+
+            {/* Total */}
+            <div className="bg-white p-3 rounded-xl shadow-sm border text-center min-w-24">
+              <span className="text-xs text-gray-500 uppercase">
+                Total
+              </span>
+              <div className="text-2xl font-bold text-blue-600">
+                {leads.length}
+              </div>
             </div>
+
+            {/* Active */}
+            <div className="bg-white p-3 rounded-xl shadow-sm border text-center min-w-24">
+              <span className="text-xs text-gray-500 uppercase">
+                Active
+              </span>
+              <div className="text-2xl font-bold text-green-600">
+                {activeCount}
+              </div>
+            </div>
+
+            {/* Not Active */}
+            <div className="bg-white p-3 rounded-xl shadow-sm border text-center min-w-24">
+              <span className="text-xs text-gray-500 uppercase">
+                Not Active
+              </span>
+              <div className="text-2xl font-bold text-red-600">
+                {notActiveCount}
+              </div>
+            </div>
+
           </div>
         </div>
 
-        {/* Search + Export */}
-        <div className="bg-white p-4 rounded-t-2xl border border-b-0 flex justify-between gap-4">
+        {/* ===============================
+            SEARCH + EXPORT
+        =============================== */}
+
+        <div className="bg-white p-4 rounded-t-2xl border border-b-0 flex flex-col md:flex-row justify-between gap-4">
           <input
             type="text"
-            placeholder="Search by name, phone, pincode..."
+            placeholder="Search by name, phone, service..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-80 px-4 py-2 border rounded-lg text-sm"
+            className="w-full md:w-80 px-4 py-2 border rounded-lg text-sm"
           />
 
           <button
@@ -138,24 +188,31 @@ const AdminDashboard = () => {
           </button>
         </div>
 
-        {/* Table */}
+        {/* ===============================
+            TABLE
+        =============================== */}
+
         <div className="bg-white border rounded-b-2xl shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
+
               <thead>
                 <tr className="bg-gray-50 border-b text-xs uppercase text-gray-500 font-bold">
                   <th className="px-6 py-4">Date</th>
                   <th className="px-6 py-4">Customer</th>
                   <th className="px-6 py-4">Contact</th>
+                  <th className="px-6 py-4">Service</th>
                   <th className="px-6 py-4">Pincode</th>
+                  <th className="px-6 py-4">Password</th>
                   <th className="px-6 py-4">Status</th>
-                  {/* <th className="px-6 py-4 text-right">Actions</th> */}
                 </tr>
               </thead>
+
               <tbody>
                 {filteredLeads.length > 0 ? (
                   filteredLeads.map((lead) => (
                     <tr key={lead._id} className="border-b hover:bg-gray-50">
+
                       <td className="px-6 py-4 text-sm text-gray-500">
                         {lead.createdAt
                           ? new Date(lead.createdAt).toLocaleDateString()
@@ -173,10 +230,21 @@ const AdminDashboard = () => {
                         </div>
                       </td>
 
+                      {/* ✅ Service */}
+                      <td className="px-6 py-4 text-sm">
+                        {lead.service || "-"}
+                      </td>
+
                       <td className="px-6 py-4 text-sm">
                         {lead.pincode}
                       </td>
 
+                      {/* ✅ Password Mask */}
+                      <td className="px-6 py-4 text-sm">
+                        {lead.password ? "••••••••" : "Not Set"}
+                      </td>
+
+                      {/* Status */}
                       <td className="px-6 py-4">
                         <select
                           value={lead.status}
@@ -190,20 +258,12 @@ const AdminDashboard = () => {
                         </select>
                       </td>
 
-                      {/* <td className="px-6 py-4 text-right">
-                        <button
-                          onClick={() => deleteLead(lead._id)}
-                          className="text-red-600 hover:text-red-900 text-sm"
-                        >
-                          Delete
-                        </button>
-                      </td> */}
                     </tr>
                   ))
                 ) : (
                   <tr>
                     <td
-                      colSpan="6"
+                      colSpan="7"
                       className="text-center py-10 text-gray-500 text-sm"
                     >
                       No leads found
@@ -211,6 +271,7 @@ const AdminDashboard = () => {
                   </tr>
                 )}
               </tbody>
+
             </table>
           </div>
         </div>

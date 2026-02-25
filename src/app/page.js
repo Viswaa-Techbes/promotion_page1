@@ -10,11 +10,24 @@ const PromoSection = () => {
 
     const formData = new FormData(e.target);
 
+    const password = formData.get("password");
+    const confirmPassword = formData.get("confirmPassword");
+
+    if (password !== confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
+
+    if (password.length < 6) {
+      alert("Password must be at least 6 characters");
+      return;
+    }
+
     const data = {
       name: formData.get("name"),
       email: formData.get("email"),
       phone: formData.get("phone"),
-      password: formData.get("password"),
+      password,
       service: formData.get("service"),
       pincode: formData.get("pincode"),
     };
@@ -31,17 +44,32 @@ const PromoSection = () => {
       const result = await res.json();
 
       if (result.success) {
-        alert("Lead stored successfully!");
-        setIsModalOpen(false);
-        e.target.reset(); // clear form
+        setSuccessMsg("Subscribed successfully ✅");
+
+        e.target.reset();
+
+        // Optional — auto close modal after 2 sec
+        setTimeout(() => {
+          setIsModalOpen(false);
+          setSuccessMsg("");
+        }, 2000);
+
       } else {
-        alert("Failed to store lead");
+        setSuccessMsg("Something went wrong ❌");
       }
     } catch (error) {
       console.error(error);
-      alert("Server error");
+      setSuccessMsg("Server error ❌");
     }
   };
+
+
+  // For repeat Password 
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  //for success screen 
+  const [successMsg, setSuccessMsg] = useState("");
 
   return (
     <>
@@ -121,7 +149,7 @@ const PromoSection = () => {
                   "Same Day Visit",
                   "Expert Engineers & Professionals",
                   "Lifetime Membership Access",
-                  "Two times Free service visits",
+                  "Two Free Visits",
                 ].map((benefit, index) => (
                   <div key={index} className="flex items-start gap-3 group justify-center sm:justify-start">
                     <div className="shrink-0 mt-1 w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center group-hover:bg-blue-600 transition-colors duration-300">
@@ -266,16 +294,38 @@ const PromoSection = () => {
                   type="password"
                   name="password"
                   required
-                  minLength="6"
+                  minLength={6}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter password"
-                  className="w-full text-black px-4 py-2.5 rounded-lg border border-gray-200 focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 outline-none transition-all"
+                  className="w-full text-black px-4 py-2.5 rounded-lg border border-gray-200 focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 outline-none"
                 />
-
                 <p className="mt-1 text-xs text-gray-500">
                   Minimum 6 characters.
                 </p>
               </div>
+
               <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1">
+                  Repeat Password <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  required
+                  minLength={6}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="Repeat password"
+                  className="w-full text-black px-4 py-2.5 rounded-lg border border-gray-200 focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 outline-none"
+                />
+                {confirmPassword && password !== confirmPassword && (
+                  <p className="text-red-500 text-xs mt-1">
+                    Passwords do not match
+                  </p>
+                )}
+              </div>
+              {/* <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1">
                   Service Needed <span className="text-red-500">*</span>
                 </label>
@@ -300,45 +350,80 @@ const PromoSection = () => {
                 <p className="mt-1 text-xs text-gray-500">
                   Service currently limited to specific zones.
                 </p>
-              </div>
+              </div> */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1">
                   Service Pincode <span className="text-red-500">*</span>
                 </label>
 
-                <select
-                  required
-                  name="pincode"
-                  defaultValue=""
-                  className="w-full text-black px-4 py-2.5 rounded-lg border border-gray-200 focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 outline-none transition-all bg-white"
-                >
-                  <option value="" disabled>
-                    Select your area pincode
-                  </option>
-                  <option value="560010 - Rajaji Nagar ">560010 - Rajaji Nagar</option>
-                  <option value="560021 - Rajaji Nagar">560021 - Rajaji Nagar</option>
-                  <option value="560023 - Rajaji Nagar">560023 - Rajaji Nagar</option>
-                  <option value="560046 - Vijay Nagar">560046 - Vijay Nagar</option>
-                  <option value="560079 - Vijay Nagar">560079 - Vijay Nagar</option>
-                  <option value="560058 - Peenya">560058 - Peenya</option>
-                  <option value="560091 - Peenya">560091 - Peenya</option>
-                  <option value="560073 - Peenya">560073 - Peenya</option>
-                  <option value="560022 - Yeshwanthpur">560022 - Yeshwanthpur</option>
-                  <option value="560054 - Yeshwanthpur">560054 - Yeshwanthpur</option>
-                  <option value="560026 - Mysore Road">560026 - Mysore Road</option>
-                  <option value="560018 - Mysore Road">560018 - Mysore Road</option>
-                  <option value="560023 - Mysore Road">560023 - Mysore Road</option>
-                  <option value="560060 - Kengeri">560060 - Kengeri</option>
-                  <option value="560074 - Kengeri">560074 - Kengeri</option>
-                  <option value="560072 - Nagarbhavi">560072 - Nagarbhavi</option>
-                  <option value="560056 - Nagarbhavi">560056 - Nagarbhavi</option>
-                  <option value="560091 - Nagarbhavi">560091 - Nagarbhavi</option>
-                </select>
+                <div className="relative">
+                  <select
+                    required
+                    name="pincode"
+                    defaultValue=""
+                    className="
+        w-full
+        appearance-none
+        bg-white
+        text-black
+        px-4
+        py-2.5
+        pr-10
+        rounded-lg
+        border border-gray-200
+        focus:border-blue-600
+        focus:ring-2 focus:ring-blue-600/20
+        outline-none
+        transition-all
+      "
+                  >
+                    <option value="" disabled>
+                      Select your pincode
+                    </option>
+
+                    {/* VALUE = Full Data | TEXT = Clean UI */}
+
+                    <option value="560010 - Rajaji Nagar">560010</option>
+                    <option value="560018 - Mysore Road">560018</option>
+                    <option value="560021 - Rajaji Nagar">560021</option>
+                    <option value="560022 - Yeshwanthpur">560022</option>
+                    <option value="560023 - Rajaji Nagar">560023</option>
+                    <option value="560026 - Mysore Road">560026</option>
+                    <option value="560046 - Vijay Nagar">560046</option>
+                    <option value="560054 - Yeshwanthpur">560054</option>
+                    <option value="560056 - Nagarbhavi">560056</option>
+                    <option value="560058 - Peenya">560058</option>
+                    <option value="560060 - Kengeri">560060</option>
+                    <option value="560072 - Nagarbhavi">560072</option>
+                    <option value="560073 - Peenya">560073</option>
+                    <option value="560074 - Kengeri">560074</option>
+                    <option value="560079 - Vijay Nagar">560079</option>
+                    <option value="560091 - Peenya">560091</option>
+
+                  </select>
+
+                  {/* Arrow */}
+                  <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center">
+                    <svg
+                      className="w-4 h-4 text-gray-500"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
 
                 <p className="mt-1 text-xs text-gray-500">
                   Service currently limited to specific zones.
                 </p>
               </div>
+              {successMsg && (
+                <div className="bg-green-100 text-green-700 text-sm font-semibold px-4 py-2 rounded-lg">
+                  {successMsg}
+                </div>
+              )}
 
               <div className="pt-4">
                 <button

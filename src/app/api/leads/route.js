@@ -6,20 +6,19 @@ import bcrypt from "bcryptjs";
 
 export async function POST(req) {
   try {
-    const { name, email, phone, password, service, pincode } =
-      await req.json();
+    const {
+      name,
+      email,
+      phone,
+      password,
+      service,
+      pincode,
+    } = await req.json();
 
-    if (!name || !phone || !password) {
+    if (!password || password.length < 6) {
       return Response.json({
         success: false,
-        message: "Required fields missing",
-      });
-    }
-
-    if (password.length < 6) {
-      return Response.json({
-        success: false,
-        message: "Password must be 6+ chars",
+        message: "Invalid password",
       });
     }
 
@@ -28,18 +27,16 @@ export async function POST(req) {
     const client = await clientPromise;
     const db = client.db("promoDB");
 
-    const lead = {
+    await db.collection("leads").insertOne({
       name,
       email,
       phone,
-      password: hashedPassword, // hashed
+      password: hashedPassword,
       service,
       pincode,
-      status: "Pending",
+      status: "Not Active",
       createdAt: new Date(),
-    };
-
-    await db.collection("leads").insertOne(lead);
+    });
 
     return Response.json({ success: true });
   } catch (err) {
