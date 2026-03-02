@@ -10,8 +10,12 @@
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
+    "crypto": "^1.0.1",
+    "framer-motion": "^12.34.3",
     "jsonwebtoken": "^9.0.3",
+    "lucide-react": "^0.575.0",
     "mongodb": "^6.21.0",
+    "mongoose": "^8.23.0",
     "next": "16.1.6",
     "nodemailer": "^8.0.1",
     "react": "19.2.3",

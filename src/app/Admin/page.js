@@ -5,39 +5,45 @@ const AdminDashboard = () => {
 
   const [leads, setLeads] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [newPassword, setNewPassword] = useState("");
+  const [message, setMessage] = useState("");
 
+  // ===============================
   // FETCH LEADS
+  // ===============================
+
   useEffect(() => {
     fetch("/api/leads")
       .then((res) => res.json())
       .then((data) => {
-        if (data.success) {
-          setLeads(data.data);
-        }
+        if (data.success) setLeads(data.data);
       });
   }, []);
 
   // ===============================
-  // ✅ STATS CALCULATION
+  // STATUS COUNTS
   // ===============================
 
-  const normalizeStatus = (status) =>
+  const normalize = (status) =>
     status?.toLowerCase().trim();
+
+  const totalCount = leads.length;
 
   const activeCount = leads.filter((lead) =>
     ["active", "contacted", "converted"].includes(
-      normalizeStatus(lead.status)
+      normalize(lead.status)
     )
   ).length;
 
   const notActiveCount = leads.filter((lead) =>
     ["not active", "pending"].includes(
-      normalizeStatus(lead.status)
+      normalize(lead.status)
     )
   ).length;
 
   // ===============================
-  // SAFE FILTER
+  // FILTER
   // ===============================
 
   const filteredLeads = leads.filter((lead) => {
@@ -46,8 +52,8 @@ const AdminDashboard = () => {
     return (
       lead.name?.toLowerCase().includes(term) ||
       lead.email?.toLowerCase().includes(term) ||
-      lead.phone?.toString().toLowerCase().includes(term) ||
-      lead.pincode?.toString().toLowerCase().includes(term) ||
+      lead.phone?.toString().includes(term) ||
+      lead.pincode?.toString().includes(term) ||
       lead.service?.toLowerCase().includes(term) ||
       lead.status?.toLowerCase().includes(term)
     );
@@ -72,58 +78,51 @@ const AdminDashboard = () => {
   };
 
   // ===============================
-  // EXPORT CSV
+  // PASSWORD RESET
   // ===============================
 
-  const exportCSV = () => {
-    const headers = [
-      "Name",
-      "Email",
-      "Phone",
-      "Service",
-      "Pincode",
-      "Status",
-      "Date",
-    ];
+  const handlePasswordReset = async () => {
+    if (!newPassword) return;
 
-    const rows = leads.map((lead) => [
-      lead.name,
-      lead.email,
-      lead.phone,
-      lead.service,
-      lead.pincode,
-      lead.status,
-      lead.createdAt
-        ? new Date(lead.createdAt).toLocaleDateString()
-        : "",
-    ]);
+    const token = localStorage.getItem("token");
 
-    const csvContent =
-      "data:text/csv;charset=utf-8," +
-      [headers, ...rows]
-        .map((row) => row.join(","))
-        .join("\n");
+    const res = await fetch("/api/admin/change-password", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        userId: selectedUser,
+        newPassword,
+      }),
+    });
 
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "leads.csv");
-    document.body.appendChild(link);
-    link.click();
+    const data = await res.json();
+    setMessage(data.message);
+
+    if (data.success) {
+      setTimeout(() => {
+        setSelectedUser(null);
+        setNewPassword("");
+        setMessage("");
+      }, 1200);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-8 w-full">
+    <div className="min-h-screen bg-gray-50 p-4 md:p-8">
+
       <div className="max-w-7xl mx-auto">
 
         {/* ===============================
             HEADER + STATS
         =============================== */}
 
-        <div className="mb-8 flex flex-col md:flex-row justify-between gap-4">
+        <div className="mb-8 flex flex-col md:flex-row justify-between gap-6">
 
           <div>
-            <h1 className="text-3xl font-extrabold text-gray-900">
+            <h1 className="text-3xl font-bold text-gray-900">
               Admin Dashboard
             </h1>
             <p className="text-sm text-gray-500 mt-1">
@@ -131,34 +130,31 @@ const AdminDashboard = () => {
             </p>
           </div>
 
-          {/* Stats Boxes */}
+          {/* Stats */}
           <div className="flex gap-4">
 
-            {/* Total */}
-            <div className="bg-white p-3 rounded-xl shadow-sm border text-center min-w-24">
-              <span className="text-xs text-gray-500 uppercase">
+            <div className="bg-white p-4 rounded-xl shadow border text-center min-w-28">
+              <div className="text-xs uppercase text-gray-500">
                 Total
-              </span>
+              </div>
               <div className="text-2xl font-bold text-blue-600">
-                {leads.length}
+                {totalCount}
               </div>
             </div>
 
-            {/* Active */}
-            <div className="bg-white p-3 rounded-xl shadow-sm border text-center min-w-24">
-              <span className="text-xs text-gray-500 uppercase">
+            <div className="bg-white p-4 rounded-xl shadow border text-center min-w-28">
+              <div className="text-xs uppercase text-gray-500">
                 Active
-              </span>
+              </div>
               <div className="text-2xl font-bold text-green-600">
                 {activeCount}
               </div>
             </div>
 
-            {/* Not Active */}
-            <div className="bg-white p-3 rounded-xl shadow-sm border text-center min-w-24">
-              <span className="text-xs text-gray-500 uppercase">
+            <div className="bg-white p-4 rounded-xl shadow border text-center min-w-28">
+              <div className="text-xs uppercase text-gray-500">
                 Not Active
-              </span>
+              </div>
               <div className="text-2xl font-bold text-red-600">
                 {notActiveCount}
               </div>
@@ -168,10 +164,10 @@ const AdminDashboard = () => {
         </div>
 
         {/* ===============================
-            SEARCH + EXPORT
+            SEARCH
         =============================== */}
 
-        <div className="bg-white p-4 rounded-t-2xl border border-b-0 flex flex-col md:flex-row justify-between gap-4">
+        <div className="bg-white p-4 rounded-t-2xl border border-b-0 flex justify-between">
           <input
             type="text"
             placeholder="Search by name, phone, service..."
@@ -179,13 +175,6 @@ const AdminDashboard = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full md:w-80 px-4 py-2 border rounded-lg text-sm"
           />
-
-          <button
-            onClick={exportCSV}
-            className="px-4 py-2 bg-gray-900 text-white rounded-lg text-sm"
-          >
-            Export CSV
-          </button>
         </div>
 
         {/* ===============================
@@ -194,10 +183,11 @@ const AdminDashboard = () => {
 
         <div className="bg-white border rounded-b-2xl shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
 
-              <thead>
-                <tr className="bg-gray-50 border-b text-xs uppercase text-gray-500 font-bold">
+            <table className="w-full text-left">
+
+              <thead className="bg-gray-100 text-xs uppercase text-gray-500">
+                <tr>
                   <th className="px-6 py-4">Date</th>
                   <th className="px-6 py-4">Customer</th>
                   <th className="px-6 py-4">Contact</th>
@@ -219,32 +209,34 @@ const AdminDashboard = () => {
                           : "-"}
                       </td>
 
-                      <td className="px-6 py-4 text-sm font-semibold">
+                      <td className="px-6 py-4 font-medium">
                         {lead.name}
                       </td>
 
                       <td className="px-6 py-4 text-sm">
                         <div>+91 {lead.phone}</div>
                         <div className="text-xs text-gray-500">
-                          {lead.email || "No email"}
+                          {lead.email}
                         </div>
                       </td>
 
-                      {/* ✅ Service */}
                       <td className="px-6 py-4 text-sm">
-                        {lead.service || "-"}
+                        {lead.service}
                       </td>
 
                       <td className="px-6 py-4 text-sm">
                         {lead.pincode}
                       </td>
 
-                      {/* ✅ Password Mask */}
-                      <td className="px-6 py-4 text-sm">
-                        {lead.password ? "••••••••" : "Not Set"}
+                      <td className="px-6 py-4">
+                        <button
+                          onClick={() => setSelectedUser(lead._id)}
+                          className="bg-orange-500 text-white px-3 py-1 rounded text-xs"
+                        >
+                          Reset Password
+                        </button>
                       </td>
 
-                      {/* Status */}
                       <td className="px-6 py-4">
                         <select
                           value={lead.status}
@@ -262,10 +254,7 @@ const AdminDashboard = () => {
                   ))
                 ) : (
                   <tr>
-                    <td
-                      colSpan="7"
-                      className="text-center py-10 text-gray-500 text-sm"
-                    >
+                    <td colSpan="7" className="text-center py-10 text-gray-500">
                       No leads found
                     </td>
                   </tr>
@@ -275,8 +264,55 @@ const AdminDashboard = () => {
             </table>
           </div>
         </div>
-
       </div>
+
+      {/* ===============================
+          PASSWORD RESET MODAL
+      =============================== */}
+
+      {selectedUser && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center">
+
+          <div className="bg-white p-6 rounded-2xl w-full max-w-md shadow-lg">
+
+            <h2 className="text-lg font-bold mb-4">
+              Reset User Password
+            </h2>
+
+            <input
+              type="password"
+              placeholder="Enter new password"
+              className="w-full px-4 py-3 border rounded-lg mb-4"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+            />
+
+            <div className="flex gap-3">
+              <button
+                onClick={handlePasswordReset}
+                className="flex-1 bg-blue-600 text-white py-2 rounded-lg"
+              >
+                Update
+              </button>
+
+              <button
+                onClick={() => setSelectedUser(null)}
+                className="flex-1 bg-gray-400 text-white py-2 rounded-lg"
+              >
+                Cancel
+              </button>
+            </div>
+
+            {message && (
+              <p className="mt-3 text-sm text-green-600">
+                {message}
+              </p>
+            )}
+
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };

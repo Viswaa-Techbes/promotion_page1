@@ -1,8 +1,13 @@
 "use client"
 import React, { useState } from 'react';
 import Image from 'next/image';
+import { useRouter } from "next/navigation";
+import LoginModal from "@/components/LoginModal";
 
 const PromoSection = () => {
+  const router = useRouter();
+  const [loginOpen, setLoginOpen] = useState(false);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleSubmit = async (e) => {
@@ -94,6 +99,17 @@ const PromoSection = () => {
 
         {/* Added px-4 sm:px-6 for horizontal breathing room on mobile */}
         <div className="w-full max-w-7xl mx-auto relative z-20 px-4 sm:px-6 lg:px-8">
+
+          {/* Login Button — Responsive Corner Fix */}
+          <div className="absolute lg:top-0 top-2 lg:left-250 right-3 z-50">
+            <button
+              onClick={() => setLoginOpen(true)}
+              className="text-xs sm:text-sm lg:text-base bg-white/10 backdrop-blur-md border border-white/30 text-white px-3 py-1.5 sm:px-4 sm:py-2 lg:px-5 lg:py-2 rounded-xl font-semibold hover:bg-white hover:text-blue-600 transition-all duration-300 shadow-md"
+            >
+              Login
+            </button>
+            <span className="text-xs block absolute right-40 text-white/70 ml-2">To login subscribe the plan</span>
+          </div>
 
           {/* Company Logo & Name Header */}
           <div className="flex justify-center items-center mb-8 lg:mb-12">
@@ -438,6 +454,11 @@ const PromoSection = () => {
           </div>
         </div>
       )}
+      {/* LOGIN MODAL — PLACE HERE */}
+      <LoginModal
+        open={loginOpen}
+        onClose={() => setLoginOpen(false)}
+      />
     </>
   );
 };

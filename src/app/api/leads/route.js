@@ -1,11 +1,10 @@
-import { ObjectId } from "mongodb";
-
-// CREATE LEAD
 import clientPromise from "@/lib/mongodb";
 import bcrypt from "bcryptjs";
 
 export async function POST(req) {
   try {
+    const body = await req.json();
+
     const {
       name,
       email,
@@ -13,7 +12,7 @@ export async function POST(req) {
       password,
       service,
       pincode,
-    } = await req.json();
+    } = body;
 
     if (!password || password.length < 6) {
       return Response.json({
@@ -22,10 +21,10 @@ export async function POST(req) {
       });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-
     const client = await clientPromise;
     const db = client.db("promoDB");
+
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     await db.collection("leads").insertOne({
       name,
@@ -34,19 +33,23 @@ export async function POST(req) {
       password: hashedPassword,
       service,
       pincode,
-      status: "Not Active",
+      role: "user",
+      status: "Pending",
       createdAt: new Date(),
     });
 
     return Response.json({ success: true });
+
   } catch (err) {
     console.error("POST ERROR:", err);
-    return Response.json({ success: false });
+    return Response.json({
+      success: false,
+      message: "Server error",
+    });
   }
 }
 
 
-// GET ALL LEADS
 export async function GET() {
   try {
     const client = await clientPromise;
@@ -58,51 +61,15 @@ export async function GET() {
       .sort({ createdAt: -1 })
       .toArray();
 
-    return Response.json({ success: true, data: leads });
+    return Response.json({
+      success: true,
+      data: leads,
+    });
+
   } catch (err) {
-    console.error("GET ERROR:", err);
-    return Response.json({ success: false });
+    console.error(err);
+    return Response.json({
+      success: false,
+    });
   }
 }
-
-
-// UPDATE STATUS
-export async function PATCH(req) {
-  try {
-    const { id, status } = await req.json();
-
-    const client = await clientPromise;
-    const db = client.db("promoDB");
-
-    await db.collection("leads").updateOne(
-      { _id: new ObjectId(id) },
-      { $set: { status } }
-    );
-
-    return Response.json({ success: true });
-  } catch (err) {
-    console.error("PATCH ERROR:", err);
-    return Response.json({ success: false });
-  }
-}
-
-
-// // DELETE LEAD
-// export async function DELETE(req) {
-//   try {
-//     const { searchParams } = new URL(req.url);
-//     const id = searchParams.get("id");
-
-//     const client = await clientPromise;
-//     const db = client.db("promoDB");
-
-//     await db.collection("leads").deleteOne({
-//       _id: new ObjectId(id),
-//     });
-
-//     return Response.json({ success: true });
-//   } catch (err) {
-//     console.error("DELETE ERROR:", err);
-//     return Response.json({ success: false });
-//   }
-// }
