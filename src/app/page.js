@@ -113,15 +113,16 @@ const PromoSection = () => {
         <div className="w-full max-w-7xl mx-auto relative z-20 px-4 sm:px-6 lg:px-8">
 
           {/* Login Button — Responsive Corner Fix */}
-          <div className="absolute top-3 right-3 lg:top-[-20] lg:right-[-100] z-50 flex flex-col items-center gap-1">
+          <div className="absolute  right-6 lg:right-12 z-50 flex flex-col items-center gap-1">
 
             <button
               onClick={() => setLoginOpen(true)}
-              className="bg-white/10 backdrop-blur-md border border-white/30 text-white  px-4 py-2 rounded-xl font-semibold  hover:bg-white hover:text-blue-600 transition-all duration-300 shadow-md" >
+              className="bg-orange-500 border border-orange-500 text-white px-4 py-2 rounded-xl font-semibold hover:bg-orange-600 transition-all duration-300 shadow-md"
+            >
               Login
             </button>
 
-            <p className="text-[11px] sm:text-xs text-white/80 text-center leading-tight">
+            <p className="text-xs text-orange-200 text-center leading-tight">
               Subscribe to get the Login Credentials
             </p>
 
@@ -130,12 +131,12 @@ const PromoSection = () => {
           {/* Company Logo & Name Header */}
           <div className="flex justify-center items-center mb-8 lg:mb-12">
             {/* Adjusted height for responsiveness: h-16 on mobile, h-24 on desktop */}
-            <div className="relative lg:right-130 bottom-5 lg:bottom-10 h-16 sm:h-20 lg:h-24 w-auto">
+            <div className="relative lg:right-130 bottom-5 lg:bottom-6 h-16 sm:h-20 lg:h-24 w-auto">
               <Image
                 src="/logo.png"
                 alt="Logo"
-                width={400}
-                height={160}
+                width={500}
+                height={300}
                 className="h-full w-auto object-contain"
                 priority
               />
@@ -162,16 +163,19 @@ const PromoSection = () => {
               </h2>
 
               <p className="mt-4 text-lg sm:text-xl text-amber-300 font-medium px-2 lg:px-0">
-                One Time Subscription for All Your Technical Service Needs
+                One Subscription for All Your Technical Service Needs
               </p>
 
-              <div className="mt-6 py-3 border-y border-gray-100/20 lg:border-gray-100">
-                <p className="text-xs sm:text-sm md:text-base font-bold text-white tracking-wider flex flex-wrap justify-center lg:justify-start gap-y-2">
-                  <span>CCTV</span> <span className="text-red-500 mx-2 hidden sm:inline">•</span>
-                  <span>LAPTOP</span> <span className="text-red-500 mx-2 hidden sm:inline">•</span>
-                  <span>DESKTOP</span> <span className="text-red-500 mx-2 hidden sm:inline">•</span>
-                  <span>ELECTRICAL</span> <span className="text-red-500 mx-2 hidden sm:inline">•</span>
-                  <span>NETWORKING</span>
+              <div className="mt-6 py-6 border-y border-gray-100/20 lg:border-gray-100">
+                <p className="text-xs sm:text-sm md:text-base font-bold text-white tracking-wider flex flex-wrap justify-center lg:justify-start items-center">
+
+                  {["CCTV", "LAPTOP", "DESKTOP", "ELECTRICAL", "NETWORKING"].map((item) => (
+                    <span key={item} className="flex items-center">
+                      <span className="text-red-500 mx-2 text-lg">•</span>
+                      {item}
+                    </span>
+                  ))}
+
                 </p>
               </div>
 
@@ -354,7 +358,7 @@ const PromoSection = () => {
                         {/* PRICE */}
                         <div className="flex flex-col items-center justify-center mb-6 mt-6">
                           <span className="text-5xl sm:text-6xl font-extrabold text-orange-500">
-                           <span className='text-black'>₹</span> 999
+                            <span className='text-black'>₹</span> 999
                           </span>
                           <span className="text-sm text-orange-500 font-medium">
                             per year
