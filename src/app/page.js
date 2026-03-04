@@ -113,7 +113,7 @@ const PromoSection = () => {
         <div className="w-full max-w-7xl mx-auto relative z-20 px-4 sm:px-6 lg:px-8">
 
           {/* Login Button */}
-          <div className="absolute top-4 right-4 lg:top-6 lg:right-12 z-50 flex flex-col items-center gap-1">
+          <div className="absolute -top-4 lg:top-0  lg:bottom-20 right-3 lg:right-12 z-50 flex flex-col items-center gap-1 text-center">
 
             <button
               onClick={() => setLoginOpen(true)}
@@ -122,7 +122,7 @@ const PromoSection = () => {
               Login
             </button>
 
-            <p className="mb-4 text-xs text-orange-200 text-center leading-tight">
+            <p className="hidden min-[500px]:block text-[11px] text-orange-200 leading-tight max-w-[200px]">
               Subscribe to get the Login Credentials
             </p>
 
@@ -136,7 +136,7 @@ const PromoSection = () => {
               alt="Techbes Logo"
               width={350}
               height={100}
-              className="object-contain"
+              className="object-contain w-[180px] sm:w-[220px] lg:w-[350px]"
               priority
             />
           </div>
