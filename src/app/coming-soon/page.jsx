@@ -6,7 +6,7 @@ export default function ComingSoonPage() {
   const [chatOpen, setChatOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0b1220] via-[#111827] to-[#0b1220] text-white overflow-hidden">
+    <div className="min-h-screen bg-linear-to-br from-[#0b1220] via-[#111827] to-[#0b1220] text-white overflow-hidden">
 
       {/* HERO */}
       <section className="relative px-6 py-20 text-center">
@@ -37,7 +37,7 @@ export default function ComingSoonPage() {
 
           {/* CTA */}
           <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="px-8 py-3 rounded-xl font-semibold bg-gradient-to-r from-blue-600 to-orange-500 hover:opacity-90 transition">
+            <button className="px-8 py-3 rounded-xl font-semibold bg-linear-to-r from-blue-600 to-orange-500 hover:opacity-90 transition">
               Get Early Access
             </button>
 
@@ -140,7 +140,7 @@ export default function ComingSoonPage() {
       {/* FLOATING CHAT BUTTON */}
       <button
         onClick={() => setChatOpen(!chatOpen)}
-        className="fixed bottom-6 right-6 bg-gradient-to-r from-blue-600 to-orange-500 px-6 py-3 rounded-full shadow-2xl hover:scale-105 transition"
+        className="fixed bottom-6 right-6 bg-linear-to-r from-blue-600 to-orange-500 px-6 py-3 rounded-full shadow-2xl hover:scale-105 transition"
       >
         Live Chat
       </button>

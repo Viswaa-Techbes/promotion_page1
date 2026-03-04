@@ -1,7 +1,12 @@
 "use client";
+
 import React, { useState, useEffect } from "react";
 
 const AdminDashboard = () => {
+
+  // =====================================================
+  // 1️⃣ STATE
+  // =====================================================
 
   const [leads, setLeads] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -9,24 +14,16 @@ const AdminDashboard = () => {
   const [newPassword, setNewPassword] = useState("");
   const [message, setMessage] = useState("");
 
-  // ===============================
-  // FETCH LEADS
-  // ===============================
-
-  useEffect(() => {
-    fetch("/api/leads")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success) setLeads(data.data);
-      });
-  }, []);
-
-  // ===============================
-  // STATUS COUNTS
-  // ===============================
+  // =====================================================
+  // 2️⃣ HELPERS
+  // =====================================================
 
   const normalize = (status) =>
     status?.toLowerCase().trim();
+
+  // =====================================================
+  // 3️⃣ DERIVED DATA (COUNTS)
+  // =====================================================
 
   const totalCount = leads.length;
 
@@ -42,9 +39,9 @@ const AdminDashboard = () => {
     )
   ).length;
 
-  // ===============================
-  // FILTER
-  // ===============================
+  // =====================================================
+  // 4️⃣ FILTER LOGIC
+  // =====================================================
 
   const filteredLeads = leads.filter((lead) => {
     const term = searchTerm.toLowerCase().trim();
@@ -55,13 +52,35 @@ const AdminDashboard = () => {
       lead.phone?.toString().includes(term) ||
       lead.pincode?.toString().includes(term) ||
       lead.service?.toLowerCase().includes(term) ||
-      lead.status?.toLowerCase().includes(term)
+      lead.status?.toLowerCase().includes(term) ||
+      lead.plan?.toLowerCase().includes(term)
     );
   });
 
-  // ===============================
-  // STATUS UPDATE
-  // ===============================
+  // =====================================================
+  // 5️⃣ FETCH LEADS
+  // =====================================================
+
+  useEffect(() => {
+    const loadLeads = async () => {
+      try {
+        const res = await fetch("/api/leads");
+        const data = await res.json();
+
+        if (data.success) {
+          setLeads(data.data);
+        }
+      } catch (err) {
+        console.error("Fetch error:", err);
+      }
+    };
+
+    loadLeads();
+  }, []);
+
+  // =====================================================
+  // 6️⃣ STATUS UPDATE
+  // =====================================================
 
   const updateStatus = async (id, status) => {
     await fetch("/api/leads", {
@@ -70,6 +89,7 @@ const AdminDashboard = () => {
       body: JSON.stringify({ id, status }),
     });
 
+    // optimistic update
     setLeads((prev) =>
       prev.map((lead) =>
         lead._id === id ? { ...lead, status } : lead
@@ -77,9 +97,9 @@ const AdminDashboard = () => {
     );
   };
 
-  // ===============================
-  // PASSWORD RESET
-  // ===============================
+  // =====================================================
+  // 7️⃣ ADMIN PASSWORD RESET
+  // =====================================================
 
   const handlePasswordReset = async () => {
     if (!newPassword) return;
@@ -110,166 +130,141 @@ const AdminDashboard = () => {
     }
   };
 
+  // =====================================================
+  // UI
+  // =====================================================
+
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-8">
 
       <div className="max-w-7xl mx-auto">
 
-        {/* ===============================
-            HEADER + STATS
-        =============================== */}
-
+        {/* HEADER */}
         <div className="mb-8 flex flex-col md:flex-row justify-between gap-6">
 
           <div>
             <h1 className="text-3xl font-bold text-gray-900">
               Admin Dashboard
             </h1>
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-sm text-gray-500">
               Manage subscription leads
             </p>
           </div>
 
-          {/* Stats */}
+          {/* STATS */}
           <div className="flex gap-4">
 
-            <div className="bg-white p-4 rounded-xl shadow border text-center min-w-28">
-              <div className="text-xs uppercase text-gray-500">
-                Total
-              </div>
-              <div className="text-2xl font-bold text-blue-600">
-                {totalCount}
-              </div>
-            </div>
-
-            <div className="bg-white p-4 rounded-xl shadow border text-center min-w-28">
-              <div className="text-xs uppercase text-gray-500">
-                Active
-              </div>
-              <div className="text-2xl font-bold text-green-600">
-                {activeCount}
-              </div>
-            </div>
-
-            <div className="bg-white p-4 rounded-xl shadow border text-center min-w-28">
-              <div className="text-xs uppercase text-gray-500">
-                Not Active
-              </div>
-              <div className="text-2xl font-bold text-red-600">
-                {notActiveCount}
-              </div>
-            </div>
+            <StatBox title="Total" value={totalCount} color="text-blue-600" />
+            <StatBox title="Active" value={activeCount} color="text-green-600" />
+            <StatBox title="Not Active" value={notActiveCount} color="text-red-600" />
 
           </div>
         </div>
 
-        {/* ===============================
-            SEARCH
-        =============================== */}
-
-        <div className="bg-white p-4 rounded-t-2xl border border-b-0 flex justify-between">
+        {/* SEARCH */}
+        <div className="bg-white p-4 rounded-t-2xl border border-b-0">
           <input
             type="text"
-            placeholder="Search by name, phone, service..."
+            placeholder="Search name, phone, plan..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full md:w-80 px-4 py-2 border rounded-lg text-sm"
           />
         </div>
 
-        {/* ===============================
-            TABLE
-        =============================== */}
+        {/* TABLE */}
+        <div className="bg-white border rounded-b-2xl shadow-sm overflow-x-auto">
 
-        <div className="bg-white border rounded-b-2xl shadow-sm overflow-hidden">
-          <div className="overflow-x-auto">
+          <table className="w-full text-left">
 
-            <table className="w-full text-left">
+            <thead className="bg-gray-100 text-xs uppercase text-gray-500">
+              <tr>
+                <th className="px-6 py-4">Date</th>
+                <th className="px-6 py-4">Customer</th>
+                <th className="px-6 py-4">Contact</th>
+                <th className="px-6 py-4">Plan</th>
+                <th className="px-6 py-4">Pincode</th>
+                <th className="px-6 py-4">Password</th>
+                <th className="px-6 py-4">Status</th>
+              </tr>
+            </thead>
 
-              <thead className="bg-gray-100 text-xs uppercase text-gray-500">
-                <tr>
-                  <th className="px-6 py-4">Date</th>
-                  <th className="px-6 py-4">Customer</th>
-                  <th className="px-6 py-4">Contact</th>
-                  <th className="px-6 py-4">Service</th>
-                  <th className="px-6 py-4">Pincode</th>
-                  <th className="px-6 py-4">Password</th>
-                  <th className="px-6 py-4">Status</th>
-                </tr>
-              </thead>
+            <tbody>
+              {filteredLeads.length > 0 ? (
+                filteredLeads.map((lead) => (
 
-              <tbody>
-                {filteredLeads.length > 0 ? (
-                  filteredLeads.map((lead) => (
-                    <tr key={lead._id} className="border-b hover:bg-gray-50">
+                  <tr key={lead._id} className="border-b hover:bg-gray-50">
 
-                      <td className="px-6 py-4 text-sm text-gray-500">
-                        {lead.createdAt
-                          ? new Date(lead.createdAt).toLocaleDateString()
-                          : "-"}
-                      </td>
-
-                      <td className="px-6 py-4 font-medium">
-                        {lead.name}
-                      </td>
-
-                      <td className="px-6 py-4 text-sm">
-                        <div>+91 {lead.phone}</div>
-                        <div className="text-xs text-gray-500">
-                          {lead.email}
-                        </div>
-                      </td>
-
-                      <td className="px-6 py-4 text-sm">
-                        {lead.service}
-                      </td>
-
-                      <td className="px-6 py-4 text-sm">
-                        {lead.pincode}
-                      </td>
-
-                      <td className="px-6 py-4">
-                        <button
-                          onClick={() => setSelectedUser(lead._id)}
-                          className="bg-orange-500 text-white px-3 py-1 rounded text-xs"
-                        >
-                          Reset Password
-                        </button>
-                      </td>
-
-                      <td className="px-6 py-4">
-                        <select
-                          value={lead.status}
-                          onChange={(e) =>
-                            updateStatus(lead._id, e.target.value)
-                          }
-                          className="text-xs border rounded px-2 py-1"
-                        >
-                          <option value="Active">Active</option>
-                          <option value="Not Active">Not Active</option>
-                        </select>
-                      </td>
-
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="7" className="text-center py-10 text-gray-500">
-                      No leads found
+                    <td className="px-6 py-4 text-sm text-gray-500">
+                      {lead.createdAt
+                        ? new Date(lead.createdAt).toLocaleDateString()
+                        : "-"}
                     </td>
-                  </tr>
-                )}
-              </tbody>
 
-            </table>
-          </div>
+                    <td className="px-6 py-4 font-medium">
+                      {lead.name}
+                    </td>
+
+                    <td className="px-6 py-4 text-sm">
+                      <div>+91 {lead.phone}</div>
+                      <div className="text-xs text-gray-500">
+                        {lead.email || "No email"}
+                      </div>
+                    </td>
+
+                    {/* PLAN INDICATOR */}
+                    <td className="px-6 py-4 text-sm">
+                      <span className={`px-2 py-1 rounded text-xs font-semibold
+                        ${lead.plan === "lifetime"
+                          ? "bg-blue-100 text-blue-700"
+                          : "bg-gray-200 text-gray-700"}`}>
+                        {lead.plan || "basic"}
+                      </span>
+                    </td>
+
+                    <td className="px-6 py-4 text-sm">
+                      {lead.pincode}
+                    </td>
+
+                    <td className="px-6 py-4">
+                      <button
+                        onClick={() => setSelectedUser(lead._id)}
+                        className="bg-orange-500 text-white px-3 py-1 rounded text-xs"
+                      >
+                        Reset Password
+                      </button>
+                    </td>
+
+                    <td className="px-6 py-4">
+                      <select
+                        value={lead.status}
+                        onChange={(e) =>
+                          updateStatus(lead._id, e.target.value)
+                        }
+                        className="text-xs border rounded px-2 py-1"
+                      >
+                        <option value="Active">Active</option>
+                        <option value="Not Active">Not Active</option>
+                      </select>
+                    </td>
+
+                  </tr>
+
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="7" className="text-center py-10 text-gray-500">
+                    No leads found
+                  </td>
+                </tr>
+              )}
+            </tbody>
+
+          </table>
         </div>
       </div>
 
-      {/* ===============================
-          PASSWORD RESET MODAL
-      =============================== */}
-
+      {/* PASSWORD RESET MODAL */}
       {selectedUser && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center">
 
@@ -304,9 +299,7 @@ const AdminDashboard = () => {
             </div>
 
             {message && (
-              <p className="mt-3 text-sm text-green-600">
-                {message}
-              </p>
+              <p className="mt-3 text-sm text-green-600">{message}</p>
             )}
 
           </div>
@@ -316,5 +309,17 @@ const AdminDashboard = () => {
     </div>
   );
 };
+
+
+// =====================================================
+// SMALL REUSABLE COMPONENT
+// =====================================================
+
+const StatBox = ({ title, value, color }) => (
+  <div className="bg-white p-4 rounded-xl shadow border text-center min-w-28">
+    <div className="text-xs uppercase text-gray-500">{title}</div>
+    <div className={`text-2xl font-bold ${color}`}>{value}</div>
+  </div>
+);
 
 export default AdminDashboard;

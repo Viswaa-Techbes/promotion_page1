@@ -58,7 +58,7 @@ export default function ForgotPasswordModal({ open, onClose }) {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 rounded-xl bg-gradient-to-r from-blue-600 to-orange-500 font-semibold hover:opacity-90 transition"
+            className="w-full py-3 rounded-xl bg-linear-to-r from-blue-600 to-orange-500 font-semibold hover:opacity-90 transition"
           >
             {loading ? "Sending..." : "Send Reset Link"}
           </button>

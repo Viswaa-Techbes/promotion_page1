@@ -10,6 +10,7 @@ export async function POST(req) {
       email,
       phone,
       password,
+      plan,
       service,
       pincode,
     } = body;
@@ -33,6 +34,7 @@ export async function POST(req) {
       password: hashedPassword,
       service,
       pincode,
+      plan,
       role: "user",
       status: "Pending",
       createdAt: new Date(),

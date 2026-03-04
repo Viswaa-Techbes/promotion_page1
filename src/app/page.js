@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useRouter } from "next/navigation";
 import LoginModal from "@/components/LoginModal";
@@ -9,6 +9,8 @@ const PromoSection = () => {
   const [loginOpen, setLoginOpen] = useState(false);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [selectedPlan, setSelectedPlan] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,13 +30,15 @@ const PromoSection = () => {
       return;
     }
 
+    // ✅ IMPORTANT — include selectedPlan
     const data = {
       name: formData.get("name"),
       email: formData.get("email"),
       phone: formData.get("phone"),
       password,
-      service: formData.get("service"),
       pincode: formData.get("pincode"),
+      plan: selectedPlan, // ⭐⭐⭐ ADD THIS
+      status: "Pending",
     };
 
     try {
@@ -53,21 +57,29 @@ const PromoSection = () => {
 
         e.target.reset();
 
-        // Optional — auto close modal after 2 sec
         setTimeout(() => {
           setIsModalOpen(false);
           setSuccessMsg("");
         }, 2000);
-
       } else {
         setSuccessMsg("Something went wrong ❌");
       }
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
       setSuccessMsg("Server error ❌");
     }
   };
+  const [activeIndex, setActiveIndex] = useState(0);
 
+  const totalSlides = 2;
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % totalSlides);
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   // For repeat Password 
   const [password, setPassword] = useState("");
@@ -101,20 +113,24 @@ const PromoSection = () => {
         <div className="w-full max-w-7xl mx-auto relative z-20 px-4 sm:px-6 lg:px-8">
 
           {/* Login Button — Responsive Corner Fix */}
-          <div className="absolute lg:top-0 top-2 lg:left-250 right-3 z-50">
+          <div className="absolute top-3 right-3 lg:top-[-20] lg:right-[-100] z-50 flex flex-col items-center gap-1">
+
             <button
               onClick={() => setLoginOpen(true)}
-              className="text-xs sm:text-sm lg:text-base bg-white/10 backdrop-blur-md border border-white/30 text-white px-3 py-1.5 sm:px-4 sm:py-2 lg:px-5 lg:py-2 rounded-xl font-semibold hover:bg-white hover:text-blue-600 transition-all duration-300 shadow-md"
-            >
+              className="bg-white/10 backdrop-blur-md border border-white/30 text-white  px-4 py-2 rounded-xl font-semibold  hover:bg-white hover:text-blue-600 transition-all duration-300 shadow-md" >
               Login
             </button>
-            <span className="text-xs block absolute right-40 text-white/70 ml-2">To login subscribe the plan</span>
+
+            <p className="text-[11px] sm:text-xs text-white/80 text-center leading-tight">
+              Subscribe to get the Login Credentials
+            </p>
+
           </div>
 
           {/* Company Logo & Name Header */}
           <div className="flex justify-center items-center mb-8 lg:mb-12">
             {/* Adjusted height for responsiveness: h-16 on mobile, h-24 on desktop */}
-            <div className="relative bottom-5 lg:bottom-10 h-16 sm:h-20 lg:h-24 w-auto">
+            <div className="relative lg:right-130 bottom-5 lg:bottom-10 h-16 sm:h-20 lg:h-24 w-auto">
               <Image
                 src="/logo.png"
                 alt="Logo"
@@ -182,7 +198,7 @@ const PromoSection = () => {
             </div>
 
             {/* Right Pricing Card Area */}
-            <div className="lg:col-span-5 relative bottom-14 lg:bottom-6 flex justify-center lg:justify-end mt-8 lg:mt-0">
+            {/* <div className="lg:col-span-5 relative bottom-14 lg:bottom-6 flex justify-center lg:justify-end mt-8 lg:mt-0">
               <div className="w-full max-w-sm sm:max-w-md bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden transform hover:-translate-y-2 transition-transform duration-300">
                 <div className="h-2 w-full bg-linear-to-r from-blue-600 to-blue-400"></div>
 
@@ -226,6 +242,170 @@ const PromoSection = () => {
                     Secure, encrypted payment
                   </div>
                 </div>
+              </div>
+            </div> */}
+
+            <div className="lg:col-span-5 relative bottom-14 lg:bottom-6 flex justify-center lg:justify-end mt-8 lg:mt-0">
+
+              {/* VIEWPORT (size locked) */}
+              <div className="w-full max-w-sm sm:max-w-md overflow-hidden">
+
+                {/* SLIDER TRACK */}
+                <div
+                  className="flex transition-transform duration-700 ease-in-out"
+                  style={{
+                    transform: `translateX(-${activeIndex * 100}%)`,
+                  }}
+                >
+
+                  {/* ================= VIP HOME LIFETIME ================= */}
+                  <div className="w-full shrink-0 flex justify-center">
+
+                    <div className="w-full max-w-sm sm:max-w-md bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden">
+
+                      <div className="h-2 w-full bg-linear-to-r from-blue-600 to-blue-400"></div>
+
+                      <div className="p-5 sm:p-6">
+
+                        {/* TITLE */}
+                        <div className="text-center">
+                          <span className="text-xs sm:text-sm font-bold tracking-widest text-gray-400 uppercase">
+                            VIP HOME LIFETIME
+                          </span>
+                        </div>
+
+                        {/* POPULAR BADGE */}
+                        <div className="text-center mt-2">
+                          <span className="bg-blue-100 text-blue-700 text-xs font-bold px-3 py-1 rounded-full">
+                            MOST POPULAR
+                          </span>
+                        </div>
+
+                        <div className="text-center mb-2 mt-2">
+                          <span className="text-xs text-red-400">
+                            * For First 300 Subscribers Only
+                          </span>
+                        </div>
+
+                        {/* PRICE */}
+                        <div className="flex flex-col items-center justify-center mb-6">
+                          <div className="flex items-center gap-3 mb-1">
+                            <span className="text-xl sm:text-2xl text-gray-400 line-through font-semibold">
+                              ₹4,999
+                            </span>
+                            <span className="px-2 py-1 bg-red-100 text-red-600 text-[10px] sm:text-xs font-extrabold rounded-md uppercase">
+                              Save 60%
+                            </span>
+                          </div>
+
+                          <div className="flex items-start">
+                            <span className="text-2xl sm:text-3xl font-bold text-gray-900 mt-2">₹</span>
+                            <span className="text-5xl sm:text-6xl font-extrabold text-blue-600 tracking-tighter">
+                              1999
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* FEATURES */}
+                        <div className="mb-6 space-y-3 text-sm text-gray-700">
+
+                          <div className="flex gap-2"><span>✅</span><p>Priority same-day service</p></div>
+                          <div className="flex gap-2"><span>✅</span><p>15% discount on all services</p></div>
+                          <div className="flex gap-2"><span>✅</span><p>1 free yearly CCTV / Laptop checkup</p></div>
+                          {/* <div className="flex gap-2"><span>✅</span><p>₹500 emergency visit free</p></div> */}
+                          <div className="flex gap-2"><span>✅</span><p>Lifetime lowest price guarantee</p></div>
+                          {/* <div className="flex gap-2"><span>✅</span><p>WhatsApp priority support</p></div> */}
+
+                        </div>
+
+                        {/* BUTTON */}
+                        <button
+                          onClick={() => {
+                            setSelectedPlan("lifetime");
+                            setIsModalOpen(true);
+                          }}
+                          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 sm:py-4 px-8 rounded-xl shadow-lg transition-all duration-300"
+                        >
+                          Subscribe Now →
+                        </button>
+
+                        <div className="mt-5 flex items-center justify-center gap-2 text-xs sm:text-sm text-gray-500 font-medium">
+                          Secure, encrypted payment
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+
+
+                  {/* ================= BASIC HOME CARE ================= */}
+                  <div className="w-full shrink-0 flex justify-center">
+
+                    <div className="w-full max-w-sm sm:max-w-md bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden">
+
+                      <div className="h-2 w-full bg-linear-to-r from-orange-600 to-orange-200"></div>
+
+                      <div className="p-5 sm:p-6 text-center">
+
+                        <span className="text-xs sm:text-sm font-bold tracking-widest text-orange-400 uppercase">
+                          BASIC HOME CARE
+                        </span>
+
+                        {/* PRICE */}
+                        <div className="flex flex-col items-center justify-center mb-6 mt-6">
+                          <span className="text-5xl sm:text-6xl font-extrabold text-orange-500">
+                           <span className='text-black'>₹</span> 999
+                          </span>
+                          <span className="text-sm text-orange-500 font-medium">
+                            per year
+                          </span>
+                        </div>
+
+                        {/* FEATURES */}
+                        <div className="mb-6 space-y-3 text-sm text-gray-700 text-left">
+
+                          <div className="flex gap-2"><span>✅</span><p>Priority phone support</p></div>
+                          <div className="flex gap-2"><span>✅</span><p>10% discount on services</p></div>
+                          <div className="flex gap-2"><span>✅</span><p>One free yearly basic inspection</p></div>
+                          <div className="flex gap-2"><span>✅</span><p>Faster service booking</p></div>
+                          <div className="flex gap-2"><span>✅</span><p>Member-only pricing access</p></div>
+
+                        </div>
+
+                        {/* BUTTON */}
+                        <button
+                          onClick={() => {
+                            setSelectedPlan("basic");
+                            setIsModalOpen(true);
+                          }}
+                          className="w-full bg-orange-600 hover:bg-orange text-white font-bold py-3 sm:py-4 px-8 rounded-xl shadow-lg"
+                        >
+                          Choose Plan →
+                        </button>
+
+                        <div className="mt-5 text-xs sm:text-sm text-gray-500">
+                          Entry level service access
+                        </div>
+
+                      </div>
+                    </div>
+
+                  </div>
+
+                </div>
+
+                {/* DOTS */}
+                <div className="flex justify-center gap-2 mt-6">
+                  {[0, 1].map((i) => (
+                    <button
+                      key={i}
+                      onClick={() => setActiveIndex(i)}
+                      className={`h-2 rounded-full transition-all ${activeIndex === i ? "bg-blue-600 w-6" : "bg-gray-300 w-2"
+                        }`}
+                    />
+                  ))}
+                </div>
+
               </div>
             </div>
           </div>
