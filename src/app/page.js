@@ -112,8 +112,8 @@ const PromoSection = () => {
         {/* Added px-4 sm:px-6 for horizontal breathing room on mobile */}
         <div className="w-full max-w-7xl mx-auto relative z-20 px-4 sm:px-6 lg:px-8">
 
-          {/* Login Button — Responsive Corner Fix */}
-          <div className="absolute  right-6 lg:right-12 z-50 flex flex-col items-center gap-1">
+          {/* Login Button */}
+          <div className="absolute top-4 right-4 lg:top-6 lg:right-12 z-50 flex flex-col items-center gap-1">
 
             <button
               onClick={() => setLoginOpen(true)}
@@ -122,25 +122,23 @@ const PromoSection = () => {
               Login
             </button>
 
-            <p className="text-xs text-orange-200 text-center leading-tight">
+            <p className="mb-4 text-xs text-orange-200 text-center leading-tight">
               Subscribe to get the Login Credentials
             </p>
 
           </div>
 
           {/* Company Logo & Name Header */}
-          <div className="flex justify-center items-center mb-8 lg:mb-12">
-            {/* Adjusted height for responsiveness: h-16 on mobile, h-24 on desktop */}
-            <div className="relative lg:right-130 bottom-5 lg:bottom-6 h-16 sm:h-20 lg:h-24 w-auto">
-              <Image
-                src="/logo.png"
-                alt="Logo"
-                width={500}
-                height={300}
-                className="h-full w-auto object-contain"
-                priority
-              />
-            </div>
+          {/* Company Logo */}
+          <div className="flex relative bottom-8 items-center mb-4">
+            <Image
+              src="/logo.png"
+              alt="Techbes Logo"
+              width={350}
+              height={100}
+              className="object-contain"
+              priority
+            />
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
