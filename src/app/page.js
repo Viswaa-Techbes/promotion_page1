@@ -354,15 +354,28 @@ const PromoSection = () => {
                         <span className="text-xs sm:text-sm font-bold tracking-widest text-orange-400 uppercase">
                           BASIC HOME CARE
                         </span>
-
+                        <div className="text-center mb-2 mt-2">
+                          <span className="text-xs text-red-400">
+                            * For First 300 Subscribers Only
+                          </span>
+                        </div>
                         {/* PRICE */}
-                        <div className="flex flex-col items-center justify-center mb-6 mt-6">
-                          <span className="text-5xl sm:text-6xl font-extrabold text-orange-500">
-                            <span className='text-black'>₹</span> 999
-                          </span>
-                          <span className="text-sm text-orange-500 font-medium">
-                            per year
-                          </span>
+                        <div className="flex flex-col items-center justify-center mb-6">
+                          <div className="flex items-center gap-3 mb-1">
+                            <span className="text-xl sm:text-2xl text-gray-400 line-through font-semibold">
+                              ₹3,999
+                            </span>
+                            <span className="px-2 py-1 bg-red-100 text-red-600 text-[10px] sm:text-xs font-extrabold rounded-md uppercase">
+                              Save 60%
+                            </span>
+                          </div>
+
+                          <div className="flex items-start">
+                            <span className="text-2xl sm:text-3xl font-bold text-gray-900 mt-2">₹</span>
+                            <span className="text-5xl sm:text-6xl font-extrabold text-orange-600 tracking-tighter">
+                              999
+                            </span>
+                          </div>
                         </div>
 
                         {/* FEATURES */}
