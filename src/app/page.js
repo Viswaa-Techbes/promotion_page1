@@ -13,6 +13,77 @@ const PromoSection = () => {
 
   const [selectedPlan, setSelectedPlan] = useState("");
 
+  const loadRazorpay = () => {
+    return new Promise((resolve) => {
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.onload = () => resolve(true);
+      document.body.appendChild(script);
+    });
+  };
+
+  const startPayment = async (plan, userData) => {
+
+    await loadRazorpay();
+
+    const res = await fetch("/api/create-order", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ plan })
+    });
+
+    const data = await res.json();
+
+    const options = {
+      key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+      amount: data.order.amount,
+      currency: "INR",
+      name: "TechBes",
+      description: "Membership Plan",
+      order_id: data.order.id,
+
+      handler: async function (response) {
+
+        console.log("Payment Success", response);
+
+        const save = await fetch("/api/leads", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            ...userData,
+            paymentId: response.razorpay_payment_id,
+            status: "Active"
+          })
+        });
+
+        const result = await save.json();
+
+        if (result.success) {
+
+          setSuccessMsg("Payment Successful ✅");
+
+          setTimeout(() => {
+            setIsModalOpen(false);
+            setSuccessMsg("");
+          }, 2000);
+
+        } else {
+          alert("Something went wrong");
+        }
+
+      },
+
+      theme: {
+        color: "#2563EB"
+      }
+    };
+
+    const rzp = new window.Razorpay(options);
+    rzp.open();
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -31,44 +102,17 @@ const PromoSection = () => {
       return;
     }
 
-    // ✅ IMPORTANT — include selectedPlan
-    const data = {
+    const userData = {
       name: formData.get("name"),
       email: formData.get("email"),
       phone: formData.get("phone"),
       password,
       pincode: formData.get("pincode"),
-      plan: selectedPlan, // ⭐⭐⭐ ADD THIS
-      status: "Pending",
+      plan: selectedPlan,
     };
 
-    try {
-      const res = await fetch("/api/leads", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      const result = await res.json();
-
-      if (result.success) {
-        setSuccessMsg("Subscribed successfully ✅");
-
-        e.target.reset();
-
-        setTimeout(() => {
-          setIsModalOpen(false);
-          setSuccessMsg("");
-        }, 2000);
-      } else {
-        setSuccessMsg("Something went wrong ❌");
-      }
-    } catch (err) {
-      console.error(err);
-      setSuccessMsg("Server error ❌");
-    }
+    // start payment
+    startPayment(selectedPlan, userData);
   };
   const [activeIndex, setActiveIndex] = useState(0);
 

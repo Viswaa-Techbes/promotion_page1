@@ -13,14 +13,8 @@ export async function POST(req) {
       plan,
       service,
       pincode,
+      paymentId
     } = body;
-
-    if (!password || password.length < 6) {
-      return Response.json({
-        success: false,
-        message: "Invalid password",
-      });
-    }
 
     const client = await clientPromise;
     const db = client.db("promoDB");
@@ -35,25 +29,30 @@ export async function POST(req) {
       service,
       pincode,
       plan,
+      paymentId,
       role: "user",
-      status: "Pending",
+      status: "Active",
       createdAt: new Date(),
     });
 
     return Response.json({ success: true });
 
   } catch (err) {
-    console.error("POST ERROR:", err);
+
+    console.error(err);
+
     return Response.json({
-      success: false,
-      message: "Server error",
+      success: false
     });
+
   }
 }
 
 
 export async function GET() {
+
   try {
+
     const client = await clientPromise;
     const db = client.db("promoDB");
 
@@ -65,13 +64,17 @@ export async function GET() {
 
     return Response.json({
       success: true,
-      data: leads,
+      data: leads
     });
 
   } catch (err) {
+
     console.error(err);
+
     return Response.json({
-      success: false,
+      success: false
     });
+
   }
+
 }
