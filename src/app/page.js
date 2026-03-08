@@ -396,7 +396,7 @@ const PromoSection = () => {
                           }}
                           className="w-full bg-orange-600 hover:bg-orange text-white font-bold py-3 sm:py-4 px-8 rounded-xl shadow-lg"
                         >
-                          Choose Plan →
+                          Subscribe Now →
                         </button>
 
                         <div className="mt-5 text-xs sm:text-sm text-gray-500">
