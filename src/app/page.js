@@ -118,13 +118,13 @@ const PromoSection = () => {
 
   const totalSlides = 2;
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % totalSlides);
-    }, 10000);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setActiveIndex((prev) => (prev + 1) % totalSlides);
+  //   }, 10000);
 
-    return () => clearInterval(interval);
-  }, []);
+  //   return () => clearInterval(interval);
+  // }, []);
 
   // For repeat Password 
   const [password, setPassword] = useState("");
@@ -298,12 +298,7 @@ const PromoSection = () => {
               <div className="w-full max-w-sm sm:max-w-md overflow-hidden">
 
                 {/* SLIDER TRACK */}
-                <div
-                  className="flex transition-transform duration-700 ease-in-out"
-                  style={{
-                    transform: `translateX(-${activeIndex * 100}%)`,
-                  }}
-                >
+                <div className="flex">
 
                   {/* ================= VIP HOME LIFETIME ================= */}
                   <div className="w-full shrink-0 flex justify-center">
@@ -386,7 +381,7 @@ const PromoSection = () => {
 
 
                   {/* ================= BASIC HOME CARE ================= */}
-                  <div className="w-full shrink-0 flex justify-center">
+                  {/* <div className="w-full shrink-0 flex justify-center">
 
                     <div className="w-full max-w-sm sm:max-w-md bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden">
 
@@ -402,7 +397,7 @@ const PromoSection = () => {
                             * For First 300 Subscribers Only
                           </span>
                         </div>
-                        {/* PRICE */}
+                       
                         <div className="flex flex-col items-center justify-center mb-6">
                           <div className="flex items-center gap-3 mb-1">
                             <span className="text-xl sm:text-2xl text-gray-400 line-through font-semibold">
@@ -421,7 +416,7 @@ const PromoSection = () => {
                           </div>
                         </div>
 
-                        {/* FEATURES */}
+                      
                         <div className="mb-6 space-y-3 text-sm text-gray-700 text-left">
 
                           <div className="flex gap-2"><span>✅</span><p>Priority phone support</p></div>
@@ -432,7 +427,7 @@ const PromoSection = () => {
 
                         </div>
 
-                        {/* BUTTON */}
+                     
                         <button
                           onClick={() => {
                             setSelectedPlan("basic");
@@ -450,12 +445,12 @@ const PromoSection = () => {
                       </div>
                     </div>
 
-                  </div>
+                  </div> */}
 
                 </div>
 
                 {/* DOTS */}
-                <div className="flex justify-center gap-2 mt-6">
+                {/* <div className="flex justify-center gap-2 mt-6">
                   {[0, 1].map((i) => (
                     <button
                       key={i}
@@ -464,7 +459,7 @@ const PromoSection = () => {
                         }`}
                     />
                   ))}
-                </div>
+                </div> */}
 
               </div>
             </div>
@@ -472,7 +467,7 @@ const PromoSection = () => {
         </div>
 
         {/* Terms Footer */}
-        <div className="absolute bottom-2 sm:bottom-8 left-1/2 -translate-x-1/2 z-30 w-full text-center px-4">
+        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-30 w-full text-center px-4">
           <div className="px-3 py-1.5 rounded">
             <p className="text-[10px] text-white/90">
               * Terms & Conditions apply. Membership benefits are subject to service availability & location coverage.
