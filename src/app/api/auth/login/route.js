@@ -2,6 +2,25 @@ import clientPromise from "@/lib/mongodb";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "https://techbes.co.in",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+};
+
+function json(data) {
+  return new Response(JSON.stringify(data), {
+    headers: {
+      "Content-Type": "application/json",
+      ...corsHeaders,
+    },
+  });
+}
+
+export async function OPTIONS() {
+  return new Response(null, { headers: corsHeaders });
+}
+
 export async function POST(req) {
   try {
     const { identifier, password } = await req.json();
@@ -9,7 +28,6 @@ export async function POST(req) {
     const client = await clientPromise;
     const db = client.db("promoDB");
 
-    // Find by email OR phone
     const user = await db.collection("leads").findOne({
       $or: [
         { email: identifier },
@@ -18,25 +36,21 @@ export async function POST(req) {
     });
 
     if (!user) {
-      return Response.json({
+      return json({
         success: false,
         message: "User not found",
       });
     }
 
-    const isMatch = await bcrypt.compare(
-      password,
-      user.password
-    );
+    const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      return Response.json({
+      return json({
         success: false,
         message: "Wrong password",
       });
     }
 
-    // JWT
     const token = jwt.sign(
       {
         id: user._id,
@@ -46,7 +60,7 @@ export async function POST(req) {
       { expiresIn: "7d" }
     );
 
-    return Response.json({
+    return json({
       success: true,
       token,
       role: user.role || "user",
@@ -54,7 +68,8 @@ export async function POST(req) {
 
   } catch (err) {
     console.error("LOGIN ERROR:", err);
-    return Response.json({
+
+    return json({
       success: false,
       message: "Server error",
     });
