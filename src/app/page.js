@@ -121,7 +121,7 @@ const PromoSection = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % totalSlides);
-    }, 4000);
+    }, 10000);
 
     return () => clearInterval(interval);
   }, []);
