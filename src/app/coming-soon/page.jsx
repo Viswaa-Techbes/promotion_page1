@@ -159,7 +159,7 @@ export default function ComingSoonPage() {
           </p>
 
           <p className="text-sm font-semibold mt-3 text-blue-400">
-            support@techbes.com
+            info@techbes.co.in
           </p>
         </div>
       )}
