@@ -1,0 +1,29 @@
+# TechBes Robots.txt
+
+User-agent: *
+Allow: /
+Allow: /about
+Allow: /services
+Allow: /clients
+Allow: /contact
+Disallow: /admin
+Disallow: /api
+Disallow: /coming-soon
+Disallow: /.next
+Disallow: /*.json
+Disallow: /node_modules
+
+# Specific search engine rules
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# Crawl delay settings
+User-agent: *
+Crawl-delay: 1
+
+# Sitemap location
+Sitemap: https://members.techbes.co.in/sitemap.xml
+Sitemap: https://members.techbes.co.in/sitemap-dynamic.xml
