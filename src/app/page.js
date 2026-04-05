@@ -232,7 +232,7 @@ return (
                 "Same Day Visit",
                 "Expert Engineers & Professionals",
                 "Lifetime Membership Access",
-                "Two Free Visits",
+                "Free Visits",
               ].map((benefit, index) => (
                 <div key={index} className="flex items-start gap-3 group justify-center sm:justify-start">
                   <div className="shrink-0 mt-1 w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center group-hover:bg-blue-600 transition-colors duration-300">
@@ -353,14 +353,16 @@ return (
                       </div>
 
                       {/* FEATURES */}
-                      <div className="mb-6 space-y-3 text-sm text-gray-700">
+                      <div className="mb-6 grid gap-x-5 gap-y-3 text-[13px] leading-snug text-gray-700 sm:grid-cols-2 sm:text-sm">
 
-                        <div className="flex gap-2"><span>✅</span><p>Priority same-day service</p></div>
-                        <div className="flex gap-2"><span>✅</span><p>15% discount on all services</p></div>
-                        <div className="flex gap-2"><span>✅</span><p>1 free yearly CCTV / Laptop checkup</p></div>
-                        {/* <div className="flex gap-2"><span>✅</span><p>₹500 emergency visit free</p></div> */}
-                        <div className="flex gap-2"><span>✅</span><p>Lifetime lowest price guarantee</p></div>
-                        {/* <div className="flex gap-2"><span>✅</span><p>WhatsApp priority support</p></div> */}
+                        <div className="flex items-start gap-2.5"><span className="shrink-0 text-base leading-none">✅</span><p>Priority service support</p></div>
+                        <div className="flex items-start gap-2.5"><span className="shrink-0 text-base leading-none">✅</span><p>15% discount on all services</p></div>
+                        <div className="flex items-start gap-2.5"><span className="shrink-0 text-base leading-none">✅</span><p>Free system health check yearly</p></div>
+                        <div className="flex items-start gap-2.5"><span className="shrink-0 text-base leading-none">✅</span><p>Free remote tech support</p></div>
+                        <div className="flex items-start gap-2.5"><span className="shrink-0 text-base leading-none">✅</span><p>Emergency visit charge waived</p></div>
+                        <div className="flex items-start gap-2.5"><span className="shrink-0 text-base leading-none">✅</span><p>Member-only pricing on CCTV &amp; IT products</p></div>
+                        <div className="flex items-start gap-2.5"><span className="shrink-0 text-base leading-none">✅</span><p>Free consultation for upgrades</p></div>
+                        <div className="flex items-start gap-2.5"><span className="shrink-0 text-base leading-none">✅</span><p>Online priority support</p></div>
 
                       </div>
 
